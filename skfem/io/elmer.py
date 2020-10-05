@@ -80,7 +80,7 @@ def to_file(mesh: Mesh, filename: str):
         for itr in mesh.boundary_facets():
             handle.write(("{} 1 {} {} {}"
                           + " {}" * mesh.facets.shape[0]
-                        + "\n").format(
+                          + "\n").format(
                 itr + 1,
                 mesh.f2t[0, itr] + 1,
                 mesh.f2t[1, itr] + 1,
