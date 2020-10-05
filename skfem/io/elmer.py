@@ -1,6 +1,5 @@
 """Elmer import and export."""
 
-
 from skfem.mesh import Mesh, MeshTri, MeshQuad, MeshTet, MeshHex
 
 
@@ -32,9 +31,13 @@ def to_file(mesh: Mesh, filename: str):
         The prefix of the filenames.
 
     """
+    mesh = mesh.copy()
     np = mesh.p.shape[1]
     nt = mesh.t.shape[1]
     mesh_type = type(mesh)
+
+    if isinstance(mesh, MeshHex):
+        mesh.t = mesh.t[[1, 5, 3, 0, 4, 7, 6, 2]]
 
     # filename.header
     with open(filename + '.header', 'w') as handle:
@@ -42,15 +45,14 @@ def to_file(mesh: Mesh, filename: str):
                                          nt,
                                          len(mesh.boundary_facets())))
         handle.write("2\n")
-        if isinstance(mesh, MeshQuad):
-            handle.write("{} {}\n".format(
-                MESH_TYPE_MAPPING[mesh_type],
-                nt
-            ))
-            handle.write("{} {}\n".format(
-                BOUNDARY_TYPE_MAPPING[mesh_type],
-                len(mesh.boundary_facets())
-            ))
+        handle.write("{} {}\n".format(
+            MESH_TYPE_MAPPING[mesh_type],
+            nt
+        ))
+        handle.write("{} {}\n".format(
+            BOUNDARY_TYPE_MAPPING[mesh_type],
+            len(mesh.boundary_facets())
+        ))
 
     # filename.nodes
     with open(filename + '.nodes', 'w') as handle:
