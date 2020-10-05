@@ -1,7 +1,22 @@
 """Elmer import and export."""
 
 
-from skfem.mesh import Mesh, MeshQuad
+from skfem.mesh import Mesh, MeshTri, MeshQuad, MeshTet, MeshHex
+
+
+MESH_TYPE_MAPPING = {
+    MeshTet: '504',
+    MeshHex: '808',
+    MeshTri: '303',
+    MeshQuad: '404',
+}
+
+BOUNDARY_TYPE_MAPPING = {
+    MeshTet: '303',
+    MeshHex: '404',
+    MeshTri: '202',
+    MeshQuad: '202',
+}
 
 
 def to_file(mesh: Mesh, filename: str):
@@ -19,6 +34,7 @@ def to_file(mesh: Mesh, filename: str):
     """
     np = mesh.p.shape[1]
     nt = mesh.t.shape[1]
+    mesh_type = type(mesh)
 
     # filename.header
     with open(filename + '.header', 'w') as handle:
@@ -27,32 +43,45 @@ def to_file(mesh: Mesh, filename: str):
                                          len(mesh.boundary_facets())))
         handle.write("2\n")
         if isinstance(mesh, MeshQuad):
-            handle.write("404 {}\n".format(nt))
-            handle.write("202 {}\n".format(len(mesh.boundary_facets())))
+            handle.write("{} {}\n".format(
+                MESH_TYPE_MAPPING[mesh_type],
+                nt
+            ))
+            handle.write("{} {}\n".format(
+                BOUNDARY_TYPE_MAPPING[mesh_type],
+                len(mesh.boundary_facets())
+            ))
 
     # filename.nodes
     with open(filename + '.nodes', 'w') as handle:
         for itr in range(np):
-            handle.write("{} -1 {} {} 0.0\n".format(itr + 1,
-                                                    *mesh.p[:, itr],
-                                                    0))
+            handle.write("{} -1 {} {} {}\n".format(
+                itr + 1,
+                mesh.p[0, itr],
+                mesh.p[1, itr],
+                mesh.p[2, itr] if mesh.p.shape[0] > 2 else 0.
+            ))
 
     # filename.elements
     with open(filename + '.elements', 'w') as handle:
         for itr in range(nt):
-            handle.write("{} 1 404 {} {} {} {}\n".format(itr + 1,
-                                                         mesh.t[0, itr] + 1,
-                                                         mesh.t[1, itr] + 1,
-                                                         mesh.t[2, itr] + 1,
-                                                         mesh.t[3, itr] + 1))
+            handle.write(("{} 1 {}"
+                          + (" {}" * mesh.t.shape[0])
+                          + "\n").format(
+                itr + 1,
+                MESH_TYPE_MAPPING[mesh_type],
+                *(mesh.t[:, itr] + 1)
+            ))
 
     # filename.boundary
     with open(filename + '.boundary', 'w') as handle:
         for itr in mesh.boundary_facets():
-            handle.write("{} 1 {} {} 202 {} {}\n".format(
+            handle.write(("{} 1 {} {} {}"
+                          + " {}" * mesh.facets.shape[0]
+                        + "\n").format(
                 itr + 1,
                 mesh.f2t[0, itr] + 1,
                 mesh.f2t[1, itr] + 1,
-                mesh.facets[0, itr] + 1,
-                mesh.facets[1, itr] + 1
+                BOUNDARY_TYPE_MAPPING[mesh_type],
+                *(mesh.facets[:, itr] + 1)
             ))

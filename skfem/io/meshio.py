@@ -6,15 +6,15 @@ from collections import OrderedDict
 import meshio
 import numpy as np
 
-import skfem
+from skfem.mesh import MeshTet, MeshHex, MeshTri, MeshQuad, MeshLine
 
 
 MESH_TYPE_MAPPING = OrderedDict([
-    ('tetra', skfem.MeshTet),
-    ('hexahedron', skfem.MeshHex),
-    ('triangle', skfem.MeshTri),
-    ('quad', skfem.MeshQuad),
-    ('line', skfem.MeshLine),
+    ('tetra', MeshTet),
+    ('hexahedron', MeshHex),
+    ('triangle', MeshTri),
+    ('quad', MeshQuad),
+    ('line', MeshLine),
 ])
 
 TYPE_MESH_MAPPING = {v: k for k, v in MESH_TYPE_MAPPING.items()}
