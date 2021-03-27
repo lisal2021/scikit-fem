@@ -57,6 +57,15 @@ sphinx:
 sphinx_doctest:
 	@eval sphinx-build -a -b doctest docs docs/_build
 
+# Benchmarks
+
+asv:
+	-rm -r ./.asv
+	asv run 2.5.0^!
+	asv run
+	asv publish
+	asv preview
+
 # Release
 
 release:

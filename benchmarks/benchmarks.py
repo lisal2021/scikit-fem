@@ -10,7 +10,7 @@ class TimeMeshTri:
         m = self.m.refined(8)
 
 
-class PeakmemMeshTri:
+class PeakmemMeshTet:
 
-    def peakmem_refine_tri(self):
-        return MeshTri().refined(8)
+    def peakmem_refine_tet(self):
+        return MeshTet().refined(5)
