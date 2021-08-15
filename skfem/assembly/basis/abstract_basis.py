@@ -44,7 +44,7 @@ class AbstractBasis:
         if mesh.refdom != elem.refdom:
             raise ValueError("Incompatible Mesh and Element.")
 
-        self.mapping = mesh._mapping() if mapping is None else mapping
+        self.mapping = mesh._mapping(elem) if mapping is None else mapping
 
         self.dofs = Dofs(mesh, elem)
 
