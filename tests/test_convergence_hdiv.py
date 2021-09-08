@@ -1,14 +1,15 @@
-import unittest
+from unittest import TestCase
 
 import numpy as np
 
 from skfem import BilinearForm, InteriorBasis, LinearForm, asm, solve
 from skfem.element import (ElementTetP0, ElementTetRT0, ElementTriP0,
-                           ElementTriRT0)
+                           ElementTriRT0, ElementTriBDM1)
 from skfem.mesh import MeshTet, MeshTri
 
 
-class ConvergenceRaviartThomas(unittest.TestCase):
+class ConvergenceRaviartThomas(TestCase):
+
     rateL2 = 1.0
     rateHdiv = 1.0
     eps = 0.1
@@ -135,7 +136,17 @@ class ConvergenceRaviartThomas(unittest.TestCase):
         self.mesh = MeshTri().refined(4)
 
 
+class ConvergenceBDM1(ConvergenceRaviartThomas):
+
+    def create_basis(self, m):
+        e = ElementTriBDM1()
+        e0 = ElementTriP0()
+        return (InteriorBasis(m, e, intorder=3),
+                InteriorBasis(m, e0, intorder=3))
+
+
 class ConvergenceRaviartThomas3D(ConvergenceRaviartThomas):
+
     rateL2 = .5
     rateHdiv = 1.0
     eps = 0.1

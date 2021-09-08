@@ -8,4 +8,5 @@ from .element_tri_mini import ElementTriMini  # noqa
 from .element_tri_morley import ElementTriMorley  # noqa
 from .element_tri_argyris import ElementTriArgyris  # noqa
 from .element_tri_hermite import ElementTriHermite  # noqa
-from .element_tri_ccr import ElementTriCCR # noqa
+from .element_tri_ccr import ElementTriCCR  # noqa
+from .element_tri_bdm1 import ElementTriBDM1  # noqa
