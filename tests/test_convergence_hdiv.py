@@ -49,6 +49,7 @@ class ConvergenceRaviartThomas(TestCase):
         hs = np.zeros(Nitrs)
 
         for itr in range(Nitrs):
+
             ib1, ib2 = self.create_basis(m)
 
             A = asm(bilinf_A, ib1)
