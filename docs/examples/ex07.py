@@ -1,4 +1,4 @@
-"""Interior penalty method."""
+"""Interior penalty method.间断有限元"""
 
 from skfem import *
 from skfem.helpers import grad, dot
